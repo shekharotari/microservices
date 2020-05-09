@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,9 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping(value = "/customer")
 public class CustomerServiceController {
+	
+	@Autowired
+	private DatabaseProperties databaseProperties;
 	
 	private static AtomicLong customerIdGenerator = new AtomicLong(0);
 	
@@ -46,5 +50,10 @@ public class CustomerServiceController {
 		
 		ResponseEntity<CustomerDO> responseEntity = new ResponseEntity<>(customerDO, HttpStatus.OK);
 		return responseEntity;
+	}
+	
+	@GetMapping(value = "/database-properties", produces = {"application/json"})
+	public ResponseEntity<DatabaseProperties> getDatabaseProperties() {
+		return new ResponseEntity<>(databaseProperties, HttpStatus.OK);
 	}
 }
