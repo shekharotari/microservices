@@ -22,6 +22,9 @@ public class CustomerServiceController {
 	@Autowired
 	private DatabaseProperties databaseProperties;
 	
+	@Autowired
+	private InventoryFeignClient inventoryFeignClient;
+	
 	private static AtomicLong customerIdGenerator = new AtomicLong(0);
 	
 	private static Map<Long, CustomerDO> customerMap = new ConcurrentHashMap<>();
@@ -55,5 +58,15 @@ public class CustomerServiceController {
 	@GetMapping(value = "/database-properties", produces = {"application/json"})
 	public ResponseEntity<DatabaseProperties> getDatabaseProperties() {
 		return new ResponseEntity<>(databaseProperties, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/items", produces = {"application/json"})
+	public List<ItemDO> getItems() {
+		return inventoryFeignClient.getItems();
+	}
+	
+	@GetMapping(value = "/items/{id}", produces = {"application/json"})
+	public ItemDO getItem(@PathVariable("id") Long itemId) {
+		return inventoryFeignClient.getItem(itemId);
 	}
 }

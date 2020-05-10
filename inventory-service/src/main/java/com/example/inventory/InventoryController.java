@@ -38,7 +38,7 @@ private static AtomicLong itemIdGenerator = new AtomicLong(0);
 	}
 	
 	@GetMapping(value = "/{id}", produces = {"application/json"})
-	public ResponseEntity<ItemDO> getItem(@PathVariable("id") Long itemId) {		
+	public ResponseEntity<ItemDO> getItem(@PathVariable("id") Long itemId) {	
 		ItemDO itemDO = itemMap.get(itemId);
 		if (itemDO == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item with id " + itemId + " is missing");
