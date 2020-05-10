@@ -1,19 +1,15 @@
 package com.example.customer;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping(value = "/customer")
@@ -23,35 +19,19 @@ public class CustomerServiceController {
 	private DatabaseProperties databaseProperties;
 	
 	@Autowired
-	private InventoryFeignClient inventoryFeignClient;
+	@Qualifier("customerService")
+	private CustomerServiceBean customerServiceBean;
 	
-	private static AtomicLong customerIdGenerator = new AtomicLong(0);
-	
-	private static Map<Long, CustomerDO> customerMap = new ConcurrentHashMap<>();
-	
-	static {
-		customerMap.put(customerIdGenerator.incrementAndGet(), new CustomerDO(customerIdGenerator.get(), "Reshama", "Otari", 35));
-		customerMap.put(customerIdGenerator.incrementAndGet(), new CustomerDO(customerIdGenerator.get(), "Chandrashekhar", "Otari", 39));
-	}
 	
 	@GetMapping(produces = {"application/json"})
 	public ResponseEntity<List<CustomerDO>> getCustomers() {
-		List<CustomerDO> customerDOs = new ArrayList<>();
-		
-		customerMap.forEach((Long customerId, CustomerDO customerDO) -> customerDOs.add(customerDO));
-		
-		ResponseEntity<List<CustomerDO>> responseEntity = new ResponseEntity<>(customerDOs, HttpStatus.OK);
+		ResponseEntity<List<CustomerDO>> responseEntity = new ResponseEntity<>(customerServiceBean.getCustomers(), HttpStatus.OK);
 		return responseEntity;
 	}
 	
 	@GetMapping(value = "/{id}", produces = {"application/json"})
 	public ResponseEntity<CustomerDO> getCustomer(@PathVariable("id") Long customerId) {		
-		CustomerDO customerDO = customerMap.get(customerId);
-		if (customerDO == null) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer with id " + customerId + " is missing");
-		}
-		
-		ResponseEntity<CustomerDO> responseEntity = new ResponseEntity<>(customerDO, HttpStatus.OK);
+		ResponseEntity<CustomerDO> responseEntity = new ResponseEntity<>(customerServiceBean.getCustomer(customerId), HttpStatus.OK);
 		return responseEntity;
 	}
 	
@@ -62,11 +42,11 @@ public class CustomerServiceController {
 	
 	@GetMapping(value = "/items", produces = {"application/json"})
 	public List<ItemDO> getItems() {
-		return inventoryFeignClient.getItems();
+		return customerServiceBean.getItems();
 	}
 	
 	@GetMapping(value = "/items/{id}", produces = {"application/json"})
 	public ItemDO getItem(@PathVariable("id") Long itemId) {
-		return inventoryFeignClient.getItem(itemId);
+		return customerServiceBean.getItem(itemId);
 	}
 }

@@ -29,6 +29,12 @@ private static AtomicLong itemIdGenerator = new AtomicLong(0);
 	
 	@GetMapping(produces = {"application/json"})
 	public ResponseEntity<List<ItemDO>> getItems() {
+//		try {
+//			Thread.sleep(10 * 1000);
+//		} catch(InterruptedException exception) {
+//			exception.printStackTrace();
+//		}
+		
 		List<ItemDO> itemDOs = new ArrayList<>();
 		
 		itemMap.forEach((Long itemId, ItemDO itemDO) -> itemDOs.add(itemDO));
