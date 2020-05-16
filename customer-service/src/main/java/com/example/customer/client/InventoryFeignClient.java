@@ -11,9 +11,9 @@ import com.example.customer.model.ItemDO;
 @FeignClient(value = "inventory-service", path = "/inventoryService/inventory")
 public interface InventoryFeignClient {
 
-	@GetMapping(produces = {"application/json"})
+	@GetMapping(value = "/items", produces = {"application/json"})
 	List<ItemDO> getItems();
 	
-	@GetMapping(value = "/{id}", produces = {"application/json"})
+	@GetMapping(value = "/items/{id}", produces = {"application/json"})
 	ItemDO getItem(@PathVariable("id") Long itemId);
 }

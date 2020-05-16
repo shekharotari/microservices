@@ -64,4 +64,9 @@ public class ItemDO implements Serializable {
 		this.quantity = quantity;
 	}
 
+	@Override
+	public String toString() {
+		return "ItemDO [id=" + id + ", type=" + type + ", name=" + name + ", quantity=" + quantity + "]";
+	}
+
 }
