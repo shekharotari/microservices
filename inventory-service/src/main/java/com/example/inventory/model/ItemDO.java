@@ -1,4 +1,4 @@
-package com.example.customer;
+package com.example.inventory.model;
 
 import java.io.Serializable;
 
@@ -11,19 +11,23 @@ public class ItemDO implements Serializable {
 
 	@XmlElement(name = "id")
 	private Long id;
-	
+
+	@XmlElement(name = "type")
+	private String type;
+
 	@XmlElement(name = "name")
 	private String name;
-	
+
 	@XmlElement(name = "quantity")
 	private int quantity;
 
 	public ItemDO() {
 	}
 
-	public ItemDO(Long id, String name, int quantity) {
+	public ItemDO(Long id, String type, String name, int quantity) {
 		super();
 		this.id = id;
+		this.type = type;
 		this.name = name;
 		this.quantity = quantity;
 	}
@@ -34,6 +38,14 @@ public class ItemDO implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getName() {

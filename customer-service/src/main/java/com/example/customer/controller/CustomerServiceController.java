@@ -1,4 +1,4 @@
-package com.example.customer;
+package com.example.customer.controller;
 
 import java.util.List;
 
@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.customer.DatabaseProperties;
+import com.example.customer.model.CustomerDO;
+import com.example.customer.model.ItemDO;
+import com.example.customer.service.CustomerService;
+
 @RestController
 @RequestMapping(value = "/customer")
 public class CustomerServiceController {
@@ -20,18 +25,18 @@ public class CustomerServiceController {
 	
 	@Autowired
 	@Qualifier("customerService")
-	private CustomerServiceBean customerServiceBean;
+	private CustomerService customerService;
 	
 	
 	@GetMapping(produces = {"application/json"})
 	public ResponseEntity<List<CustomerDO>> getCustomers() {
-		ResponseEntity<List<CustomerDO>> responseEntity = new ResponseEntity<>(customerServiceBean.getCustomers(), HttpStatus.OK);
+		ResponseEntity<List<CustomerDO>> responseEntity = new ResponseEntity<>(customerService.getCustomers(), HttpStatus.OK);
 		return responseEntity;
 	}
 	
 	@GetMapping(value = "/{id}", produces = {"application/json"})
 	public ResponseEntity<CustomerDO> getCustomer(@PathVariable("id") Long customerId) {		
-		ResponseEntity<CustomerDO> responseEntity = new ResponseEntity<>(customerServiceBean.getCustomer(customerId), HttpStatus.OK);
+		ResponseEntity<CustomerDO> responseEntity = new ResponseEntity<>(customerService.getCustomer(customerId), HttpStatus.OK);
 		return responseEntity;
 	}
 	
@@ -42,11 +47,11 @@ public class CustomerServiceController {
 	
 	@GetMapping(value = "/items", produces = {"application/json"})
 	public List<ItemDO> getItems() {
-		return customerServiceBean.getItems();
+		return customerService.getItems();
 	}
 	
 	@GetMapping(value = "/items/{id}", produces = {"application/json"})
 	public ItemDO getItem(@PathVariable("id") Long itemId) {
-		return customerServiceBean.getItem(itemId);
+		return customerService.getItem(itemId);
 	}
 }

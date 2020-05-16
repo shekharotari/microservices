@@ -1,4 +1,4 @@
-package com.example.customer;
+package com.example.customer.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +11,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.customer.client.InventoryFeignClient;
+import com.example.customer.model.CustomerDO;
+import com.example.customer.model.ItemDO;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 
 @Service("customerService")
-public class CustomerServiceBean {
+public class CustomerService {
 	@Autowired
 	private InventoryFeignClient inventoryFeignClient;
 	
