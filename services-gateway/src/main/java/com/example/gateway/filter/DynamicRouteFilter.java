@@ -7,31 +7,26 @@ import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
 
 @Component
-public class UserResponseTrackingFilter extends ZuulFilter {
+public class DynamicRouteFilter extends ZuulFilter {
 
 	@Override
 	public boolean shouldFilter() {
 		return true;
 	}
-
+	
 	@Override
 	public String filterType() {
-		return "post";
+		return "route";
 	}
 
 	@Override
 	public int filterOrder() {
 		return 1;
 	}
-	
+
 	@Override
 	public Object run() throws ZuulException {
-		RequestContext requestContext = RequestContext.getCurrentContext();
-
-		requestContext.getResponse().addHeader("custom-correlation-id", getCustomCorrelationId());
-		
-		System.out.println("Completed processing for Request URI: " + requestContext.getRequest().getRequestURI());
-		System.out.println("Completed processing for Custom Correlation Id: " + getCustomCorrelationId());
+		System.out.println("Route Filter for Custom Correlation Id : " + getCustomCorrelationId());
 		
 		return null;
 	}
@@ -47,4 +42,5 @@ public class UserResponseTrackingFilter extends ZuulFilter {
 		
 		return null;
 	}
+
 }
