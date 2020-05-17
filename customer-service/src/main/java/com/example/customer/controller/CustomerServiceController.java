@@ -2,6 +2,8 @@ package com.example.customer.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -27,9 +29,10 @@ public class CustomerServiceController {
 	@Qualifier("customerService")
 	private CustomerService customerService;
 	
-	
 	@GetMapping(produces = {"application/json"})
-	public ResponseEntity<List<CustomerDO>> getCustomers() {
+	public ResponseEntity<List<CustomerDO>> getCustomers(@Autowired HttpServletRequest httpServletRequest) {
+		System.out.println("Processing for custom correlation id " + httpServletRequest.getHeader("custom-correlation-id"));
+		
 		ResponseEntity<List<CustomerDO>> responseEntity = new ResponseEntity<>(customerService.getCustomers(), HttpStatus.OK);
 		return responseEntity;
 	}
