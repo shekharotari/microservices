@@ -50,7 +50,8 @@ public class CustomerService {
 	
 	@HystrixCommand(
 			commandProperties = {
-					@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000")
+					@HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE"), // Select one of the two values: THREAD and SEMAPHORE
+					@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000"),
 			},
 			fallbackMethod = "getItemsFallback",
 			threadPoolKey = "inventoryPool",
