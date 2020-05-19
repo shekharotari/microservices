@@ -33,6 +33,9 @@ public class CustomerServiceApplication {
 			
 			@Override
 			public void apply(RequestTemplate template) {
+				
+				template.headers().forEach((k, v) -> System.out.println(String.format("Key: %s, Value: %s", k, v)));
+				
 				if (!template.headers().containsKey(AUTHORIZATION_HEADER)) {
 			        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			        if (auth != null && auth.getDetails() instanceof OAuth2AuthenticationDetails) {
