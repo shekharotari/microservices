@@ -66,6 +66,7 @@ public class CustomerService {
 			)
 	public List<ItemDO> getItems() {
 		LOG.debug("getItems()");
+		System.out.println("11111111111");
 		
 		return inventoryFeignClient.getItems();
 	}
