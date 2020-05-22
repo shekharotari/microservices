@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.example.customer.model.ItemDO;
 
-@FeignClient(value = "inventory-service", path = "/inventoryService/inventory")
+@FeignClient(value = "inventory-service", path = "/inventory-context/inventory")
 public interface InventoryFeignClient {
 
 	@GetMapping(value = "/items", produces = {"application/json"})
