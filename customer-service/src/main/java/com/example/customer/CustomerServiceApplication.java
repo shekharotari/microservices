@@ -6,10 +6,10 @@ import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
+
+import com.example.customer.strategy.UserContext;
+import com.example.customer.strategy.UserContextHolder;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
@@ -20,7 +20,6 @@ import feign.RequestTemplate;
 @EnableCircuitBreaker
 @EnableResourceServer
 public class CustomerServiceApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(CustomerServiceApplication.class, args);
 	}
@@ -28,21 +27,9 @@ public class CustomerServiceApplication {
 	@Bean
 	public RequestInterceptor feignRequestInterceptor() {
 		return new RequestInterceptor() {
-			private static final String AUTHORIZATION_HEADER = "Authorization";
-			private static final String BEARER_TOKEN_TYPE = "Bearer";
-			
 			@Override
 			public void apply(RequestTemplate template) {
-				
-				template.headers().forEach((k, v) -> System.out.println(String.format("Key: %s, Value: %s", k, v)));
-				
-				if (!template.headers().containsKey(AUTHORIZATION_HEADER)) {
-			        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			        if (auth != null && auth.getDetails() instanceof OAuth2AuthenticationDetails) {
-			            OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) auth.getDetails();
-			            template.header(AUTHORIZATION_HEADER, String.format("%s %s", BEARER_TOKEN_TYPE, details.getTokenValue()));
-			        }
-			    }
+				template.header(UserContext.AUTHORIZATION_HEADER, UserContextHolder.getUserContext().getHeader(UserContext.AUTHORIZATION_HEADER));
 			}
 		};
 	}

@@ -54,7 +54,7 @@ public class CustomerService {
 	
 	@HystrixCommand(
 			commandProperties = {
-					@HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE"), // Select one of the two values: THREAD and SEMAPHORE
+					@HystrixProperty(name = "execution.isolation.strategy", value = "THREAD"), // Select one of the two values: THREAD and SEMAPHORE
 					@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000"),
 			},
 			fallbackMethod = "getItemsFallback",
@@ -74,7 +74,7 @@ public class CustomerService {
 	}
 	
 	public List<ItemDO> getItemsFallback() {
-		System.out.println("Fallback getItems method is called");
+		LOG.warn("Fallback for getItems() method is called - getItemsFallback()");
 		return new ArrayList<ItemDO>(0);
 	}
 }
