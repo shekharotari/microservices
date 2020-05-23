@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ import com.example.inventory.model.ItemDO;
 
 @Service("inventoryService")
 public class InventoryService {
+	private static final Logger LOG = LogManager.getLogger(InventoryService.class);
+	
 	private static AtomicLong itemIdGenerator = new AtomicLong(0);
 	
 	private static Map<Long, ItemDO> itemMap = new ConcurrentHashMap<>();
@@ -30,23 +34,29 @@ public class InventoryService {
 	}
 	
 	public List<ItemDO> getItems() {
+		LOG.debug("getItems()");
 		List<ItemDO> itemDOs = new ArrayList<>();
 
 		itemMap.forEach((Long itemId, ItemDO itemDO) -> itemDOs.add(itemDO));
 		
+		LOG.debug("~getItems()");
 		return itemDOs;
 	}
 	
-	public ItemDO getItem(Long itemId) {	
+	public ItemDO getItem(Long itemId) {
+		LOG.debug("getItem(itemId: {})", itemId);
 		ItemDO itemDO = itemMap.get(itemId);
 		if (itemDO == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item with id " + itemId + " is missing");
 		}
 		
+		LOG.debug("~getItem(itemId: {})", itemId);
 		return itemDO;
 	}
 
 	public ItemDO addItem(ItemDO newItemDO) {
+		LOG.debug("addItem()");
+		
 		// Error if the item already exists
 		itemMap.forEach((Long itemId, ItemDO itemDO) -> {
 			if (itemDO.getType().equalsIgnoreCase(newItemDO.getType()) 
@@ -64,6 +74,7 @@ public class InventoryService {
 		// Notify the subscribers about the new item added to the store
 		itemChangePublisher.publishItemChange("CREATE", newItemDO);
 		
+		LOG.debug("~addItem()");
 		return newItemDO;
 	}
 }

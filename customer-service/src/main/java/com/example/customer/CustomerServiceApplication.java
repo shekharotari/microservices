@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import com.example.customer.strategy.UserContext;
 import com.example.customer.strategy.UserContextHolder;
 
+import brave.sampler.Sampler;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 
@@ -32,5 +33,10 @@ public class CustomerServiceApplication {
 				template.header(UserContext.AUTHORIZATION_HEADER, UserContextHolder.getUserContext().getHeader(UserContext.AUTHORIZATION_HEADER));
 			}
 		};
+	}
+	
+	@Bean
+	public Sampler defaultSampler() {
+		return Sampler.ALWAYS_SAMPLE;
 	}
 }

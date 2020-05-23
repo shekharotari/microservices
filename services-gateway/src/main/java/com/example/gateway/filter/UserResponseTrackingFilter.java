@@ -30,9 +30,6 @@ public class UserResponseTrackingFilter extends ZuulFilter {
 
 		requestContext.getResponse().addHeader("custom-correlation-id", getCustomCorrelationId());
 		
-		System.out.println("Completed processing for Request URI: " + requestContext.getRequest().getRequestURI());
-		System.out.println("Completed processing for Custom Correlation Id: " + getCustomCorrelationId());
-		
 		return null;
 	}
 

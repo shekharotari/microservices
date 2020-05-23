@@ -26,8 +26,6 @@ public class DynamicRouteFilter extends ZuulFilter {
 
 	@Override
 	public Object run() throws ZuulException {
-		System.out.println("Route Filter for Custom Correlation Id : " + getCustomCorrelationId());
-		
 		return null;
 	}
 

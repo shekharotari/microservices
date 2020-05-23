@@ -70,11 +70,12 @@ public class CustomerService {
 	}
 	
 	public ItemDO getItem(Long itemId) {
+		LOG.debug("getItem(itemId: {})", itemId);
 		return inventoryFeignClient.getItem(itemId);
 	}
 	
 	public List<ItemDO> getItemsFallback() {
-		LOG.warn("Fallback for getItems() method is called - getItemsFallback()");
+		LOG.warn("getItemsFallback()");
 		return new ArrayList<ItemDO>(0);
 	}
 }

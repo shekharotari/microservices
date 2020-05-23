@@ -32,16 +32,10 @@ public class UserRequestTrackingFilter extends ZuulFilter {
 		
 		// Check if custom correlation id is present. If not, then generate it.
 		String customCorrelationId = getCustomCorrelationId();
-		if (customCorrelationId != null) {
-			System.out.println("Existing custom correlation id: " + customCorrelationId);
-		} else {
+		if (customCorrelationId == null) {
 			customCorrelationId = UUID.randomUUID().toString();
 			requestContext.addZuulRequestHeader("custom-correlation-id", customCorrelationId);
-			
-			System.out.println("Custom correlation id " + customCorrelationId + " is generated");
 		}
-		
-		System.out.println("Processing incoming request for: " + requestContext.getRequest().getRequestURI());
 		
 		return null;
 	}
