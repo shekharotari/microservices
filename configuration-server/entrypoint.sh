@@ -7,9 +7,4 @@
 
 # echo "discovery-server is started";
 
-#java -jar ${1}/app.jar --eureka.client.serviceUrl.defaultZone=${2}
-
-echo ${1}
-echo ${2}
-
 java -jar ${1}/app.jar --eureka.client.serviceUrl.defaultZone=${2}
