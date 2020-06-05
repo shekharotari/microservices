@@ -1,0 +1,19 @@
+version: '3'
+services:
+  discovery-server-service:
+    image: shekharotari/discovery-server:0.0.1
+    ports:
+      - "8761:8761"
+      
+  configuration-server-service:
+    image: shekharotari/configuration-server:0.0.1
+    ports:
+      - "4001:4001"
+    links:
+      - "discovery-server-service"
+    environment:
+      - PROFILE_ACTIVE=git
+      - GIT_USER=shekharotari
+      - GIT_PASSWORD=IamShekhar@2020
+      - DISCOVERY_SERVER_URL=http://discovery-server:8761/eureka
+      
