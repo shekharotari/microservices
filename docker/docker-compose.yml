@@ -1,18 +1,37 @@
 version: '3'
 services:
+  zookeeper-server:
+    image: bitnami/zookeeper:latest
+    ports:
+      - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - my_network
+      
+  kafka-server:
+    image: bitnami/kafka:latest
+    ports:
+      - "9092:9092"
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper-server:2181
+    networks:
+      - my_network
+    depends_on:
+      - zookeeper-server
+      
   discovery-server:
     image: shekharotari/discovery-server:0.0.1
     ports:
       - "8761:8761"
     networks:
-      - my_network  
+      - my_network
       
   configuration-server:
     image: shekharotari/configuration-server:0.0.1
     ports:
       - "4001:4001"
-    depends_on:
-      - discovery-server
     environment:
       - PROFILE_ACTIVE=git
       - GIT_USER=shekharotari
@@ -20,18 +39,46 @@ services:
       - DISCOVERY_SERVER_URL=http://discovery-server:8761/eureka
     networks:
       - my_network
+    depends_on:
+      - discovery-server
       
   authentication-service:
     image: shekharotari/authentication-service:0.0.1
     ports:
       - "10001:10001"
-    depends_on:
-      - discovery-server
-      - configuration-server
     environment:
       - DISCOVERY_SERVER_URL=http://discovery-server:8761/eureka
     networks:
-      - my_network  
+      - my_network
+    depends_on:
+      - discovery-server
+      - configuration-server
+      
+  services-gateway:
+    image: shekharotari/services-gateway:0.0.1
+    ports:
+      - "5555:5555"
+    environment:
+      - DISCOVERY_SERVER_URL=http://discovery-server:8761/eureka
+    networks:
+      - my_network
+      
+  inventory-service:
+    image: shekharotari/inventory-service:0.0.1
+    ports:
+      - "3001:3001"
+    environment:
+      - DISCOVERY_SERVER_URL=http://discovery-server:8761/eureka
+      - KAFKA_BROKER=kafka-server
+      - OAUTH2_RESOURCE_USER_URI=http://authentication-service:10001/authentication-service/user
+    networks:
+      - my_network
+    depends_on:
+      - kafka-server
+      - discovery-server
+      - configuration-server
+      - authentication-service
+      - services-gateway
 
 networks:
   my_network:
