@@ -3,12 +3,10 @@ RUN apk update && apk upgrade && apk add netcat-openbsd
 
 LABEL Author="Chandrashekhar Prakash Otari"
 
-ENV APP_PATH=/usr/local/authentication-service
-ENV DISCOVERY_SERVER_URL=http://localhost:8761/eureka
+ENV APP_PATH=/usr/local/
 
-RUN mkdir -p ${APP_PATH}
 WORKDIR ${APP_PATH}
 COPY target/*.jar app.jar
 COPY entrypoint.sh entrypoint.sh
 RUN chmod +x entrypoint.sh
-CMD ./entrypoint.sh ${APP_PATH} ${DISCOVERY_SERVER_URL}
+CMD ./entrypoint.sh ${APP_PATH}

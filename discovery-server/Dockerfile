@@ -3,9 +3,8 @@ RUN apk update && apk upgrade && apk add netcat-openbsd
 
 LABEL Author="Chandrashekhar Prakash Otari"
 
-ENV APP_PATH=/usr/local/discovery-server
+ENV APP_PATH=/usr/local/
 
-RUN mkdir -p ${APP_PATH}
 WORKDIR ${APP_PATH}
 COPY target/*.jar app.jar
 COPY entrypoint.sh entrypoint.sh

@@ -7,5 +7,4 @@
 
 #echo "discovery-server is started";
 
-java -Deureka.client.serviceUrl.defaultZone=${2} \
-     -jar ${1}/app.jar
+java -jar ${1}/app.jar

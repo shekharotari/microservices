@@ -16,6 +16,7 @@ services:
     environment:
       - ALLOW_PLAINTEXT_LISTENER=yes
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper-server:2181
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
     networks:
       - my_network
     depends_on:
@@ -27,58 +28,76 @@ services:
       - "8761:8761"
     networks:
       - my_network
+    depends_on:
+      - zookeeper-server
+      - kafka-server
       
   configuration-server:
     image: shekharotari/configuration-server:0.0.1
     ports:
       - "4001:4001"
     environment:
-      - PROFILE_ACTIVE=git
-      - GIT_USER=shekharotari
-      - GIT_PASSWORD=IamShekhar@2020
-      - DISCOVERY_SERVER_URL=http://discovery-server:8761/eureka
+      - SPRING_PROFILES_ACTIVE=git
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_USERNAME=shekharotari
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_PASSWORD=IamShekhar@2020
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka
     networks:
       - my_network
     depends_on:
+      - zookeeper-server
+      - kafka-server
       - discovery-server
-      
-  authentication-service:
-    image: shekharotari/authentication-service:0.0.1
-    ports:
-      - "10001:10001"
-    environment:
-      - DISCOVERY_SERVER_URL=http://discovery-server:8761/eureka
-    networks:
-      - my_network
-    depends_on:
-      - discovery-server
-      - configuration-server
       
   services-gateway:
     image: shekharotari/services-gateway:0.0.1
     ports:
       - "5555:5555"
     environment:
-      - DISCOVERY_SERVER_URL=http://discovery-server:8761/eureka
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka
     networks:
       - my_network
+    depends_on:
+      - zookeeper-server
+      - kafka-server
+      - discovery-server
+      - configuration-server
+      
+  authentication-service:
+    image: shekharotari/authentication-service:0.0.1
+    ports:
+      - "10001:10001"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka
+    networks:
+      - my_network
+    depends_on:
+      - zookeeper-server
+      - kafka-server
+      - discovery-server
+      - configuration-server
+      - services-gateway
       
   inventory-service:
     image: shekharotari/inventory-service:0.0.1
     ports:
       - "3001:3001"
     environment:
-      - DISCOVERY_SERVER_URL=http://discovery-server:8761/eureka
-      - KAFKA_BROKER=kafka-server
-      - OAUTH2_RESOURCE_USER_URI=http://authentication-service:10001/authentication-service/user
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka
+      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka-server
+      - SECURITY_OAUTH2_RESOURCE_USER_INFO_URI=http://authentication-service:10001/authentication-service/user
+      - SPRING_CLOUD_CONFIG_URI=http://configuration-server:4001/configuration-context/
+      - SPRING_PROFILES_ACTIVE=dev
+      - LOGGING_FILE_NAME=/var/log/inventory-service.log
+      - LOGGING_LEVEL_APP=DEBUG
     networks:
       - my_network
     depends_on:
+      - zookeeper-server
       - kafka-server
       - discovery-server
       - configuration-server
       - authentication-service
       - services-gateway
-
+      
 networks:
   my_network:

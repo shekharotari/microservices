@@ -7,7 +7,4 @@
 
 #echo "discovery-server is started";
 
-java -Deureka.client.serviceUrl.defaultZone=${2} \
-     -Dspring.cloud.stream.kafka.binder.brokers=${3} \
-     -Dsecurity.oauth2.resource.user-info-uri=${4} \
-     -jar ${1}/app.jar
+java -jar ${1}/app.jar
